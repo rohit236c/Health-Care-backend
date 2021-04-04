@@ -21,7 +21,6 @@ let BlockChainSchema = new Schema({
         type: String
     },
     id: {
-        required: true,
         type: Schema.Types.ObjectId,
         ref: 'Users'
     }

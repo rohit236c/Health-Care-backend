@@ -9,11 +9,10 @@ const chalk = require('chalk');
 class BlockChain {
 
     constructor() {
-
-
         this.chain = [];
         this.curr_transaction = [];
     }
+
     getLastBlock(cb) {
         return BlockChainModel.findOne({}, null, {
             sort: {
@@ -26,6 +25,7 @@ class BlockChain {
             cb(block);
         });
     }
+
     getLastBlock2(cb) {
         return BlockChainModelTwo.findOne({}, null, {
             sort: {
@@ -38,6 +38,7 @@ class BlockChain {
             cb(block);
         });
     }
+
     addNewBlock = asyncHandler( async(prevHash, id, secret) => {
         let block = {
             index: this.chain.length + 1,
@@ -49,15 +50,13 @@ class BlockChain {
         
         if (validator.proofOfWork() === TARGET_HASH) {
             block.hash = hash(block);
-            console.log("here", secret);
             block.id = id;
+
             this.getLastBlock2(async(lastblock) => {
                 if (lastblock) {
-                    console.log("here1", secret);
                     block.prevHash = lastblock.hash;
                 } 
                 let newBlockChain = new BlockChainModelTwo(block);
-                console.log("NEW", block);
                 newBlockChain.save((err) => {
                     if (err) return console.log(chalk.red("cannot save"));
 
