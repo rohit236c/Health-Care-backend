@@ -16,6 +16,7 @@ const DocumentSchema = new Schema({
     },
     secret: {
         type: String,
-    }
+    },
+    image: { data: Buffer, contentType: String}
 });
 module.exports = mongoose.model("Documents", DocumentSchema);

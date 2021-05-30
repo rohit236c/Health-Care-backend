@@ -14,6 +14,7 @@ const validateLoginInput = require("../validation/login");
 const User = require("../models/users");
 const Patients = require("../models/Patient");
 const Doctors = require("../models/doctor");
+const Documents = require('../models/Documents');
 const morgan = require('morgan');
 const mongoose = require("mongoose");
 exports.signup = asyncHandler(async (req, res, next) => {
@@ -167,4 +168,55 @@ exports.getPatients = asyncHandler(async(req,res,next) => {
     // let arr = doctor.patients.map(ele => new mongoose.Types.ObjectId(ele));
     const patient = await Patients.find().where('id').in(doctor.patients).exec();
     res.json({patients: patient, success: true});
+});
+
+exports.getSecret = asyncHandler(async(req, res, next) => {
+    let userid = req.body.patientid
+    let documentid = ""
+    let secret = req.body.secret
+    let doctorid = req.body.doctorid
+    console.log("call ayi ithe", req.body)
+
+    // TODO: CHANGE IT TO PASSWORD VALIDATION
+    let doctor = await Doctors.findOne({id: doctorid}).exec()
+
+    if (doctor == null) {
+        return res.status(400).json({success: false, message: "Invalid Secret"})
+    }
+
+    let patient =  await Patients.findOne({
+        id: userid
+    }).exec()
+
+    res.status(200).json({
+        success: true,
+        message: "secret sent",
+        patient: patient
+    }); 
+});
+
+
+exports.getDocuments = asyncHandler(async(req,res,next)=>{
+    let userid = req.body.userid
+    let documentid = req.body.document_id
+
+    let secret = req.body.secret
+
+    let document = await Documents.findOne({
+        userid: userid,
+        secret: secret
+    }).exec()
+
+    if(document == null) {
+        return res.status(400).json({
+            success: false,
+            message: "Document Not Found"
+        })
+    }
+
+    return res.json({
+        success: true,
+        message: "Document Found",
+        document: document
+    });
 });

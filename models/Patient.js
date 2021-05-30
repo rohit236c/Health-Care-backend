@@ -18,6 +18,11 @@ const PatientSchema = new Schema({
     date: {
         type: Date,
         default: Date.now()
+    },
+    documents: {
+        type: Array,
+        default: [],
+        ref: "Documents"
     }
 });
 module.exports  = mongoose.model("Patients", PatientSchema);
