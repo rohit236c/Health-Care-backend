@@ -178,6 +178,16 @@ exports.getSecret = asyncHandler(async(req, res, next) => {
     console.log("call ayi ithe", req.body)
 
     // TODO: CHANGE IT TO PASSWORD VALIDATION
+    let user = await User.findOne({
+        _id: doctorid
+    });
+    if (user == null) {
+        return res.status(400).json({success: false, message: "User Not Found"})
+    }
+    const match = await bcrypt.compare(secret, user.password);
+    if(!match) {
+        return res.status(400).json({success: false, message: "Invalid Secret"})
+    }
     let doctor = await Doctors.findOne({id: doctorid}).exec()
 
     if (doctor == null) {
