@@ -31,6 +31,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
                 name: req.body.name,
                 email: req.body.email,
                 password: req.body.password,
+                description: req.body.description,
                 role: req.body.role
             });
             // Hash password before saving in database
@@ -78,6 +79,7 @@ createDoctor = (async (user) => {
     const newDoctor = new Doctors({
         id: user._id,
         name: user.name,
+        description: user.description
     });
     await newDoctor.save();
 });
@@ -230,3 +232,44 @@ exports.getDocuments = asyncHandler(async(req,res,next)=>{
         document: document
     });
 });
+
+exports.getDoctor = asyncHandler(async(req,res,next)=> {
+    let docID = req.params.id
+    let doctor = await Doctors.findById(docID).exec()
+
+    if(doctor == null) {
+        return res.status(400).json({
+            success: false,
+            message: "Document Not Found"
+        })
+    }
+    return res.status(200).json({
+        success: true,
+        message: "Doctor  Found",
+        doctor: doctor
+    })
+})
+
+exports.updateDoctor = asyncHandler(async(req,res,next)=> {
+    let docID = req.body.id
+    let docRating = req.body.rating
+    let doctor = await Doctors.findOne({
+        _id: docID
+    }).exec()
+
+    if(doctor == null) {
+        return res.status(400).json({
+            success: false,
+            message: "Doctor Not Found"
+        })
+    }
+    let newRating = (doctor.rating + docRating) / 2;
+    doctor.rating = newRating
+    await doctor.save()
+
+    return res.status(200).json({
+        success: true,
+        message: "Rating Updated",
+        doctor: doctor
+    })
+})
