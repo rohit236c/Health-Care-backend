@@ -21,6 +21,13 @@ const DoctorSchema = new Schema({
     date: {
         type: Date,
         default: Date.now()
+    },
+    description: {
+        type: String
+    },
+    rating: {
+        type: Number,
+        default: 5
     }
 });
 module.exports  = mongoose.model("Doctors", DoctorSchema);
